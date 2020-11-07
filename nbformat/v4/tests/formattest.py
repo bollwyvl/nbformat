@@ -6,11 +6,12 @@ import tempfile
 
 pjoin = os.path.join
 
+from ...constants import DEFAULT_ENCODING
 from .nbexamples import nb0
 
 
 def open_utf8(fname, mode):
-    return io.open(fname, mode=mode, encoding='utf-8')
+    return io.open(fname, mode=mode, encoding=DEFAULT_ENCODING)
 
 class NBFormatTest:
     """Mixin for writing notebook format tests"""

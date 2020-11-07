@@ -148,5 +148,3 @@ b = 5
 print "ünîcødé"
 
 """ % (nbformat, nbformat_minor)
-
-

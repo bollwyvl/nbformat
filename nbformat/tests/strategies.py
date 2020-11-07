@@ -1,16 +1,21 @@
 """nbformat strategies for hypothesis"""
+
+# Copyright (c) Jupyter Development Team.
+# Distributed under the terms of the Modified BSD License.
+
 import pytest
 import re
 from pathlib import Path
 from hypothesis import given, strategies as st, assume, settings, HealthCheck
 
-from nbformat import validate, reads, writes
+from nbformat import validate, reads, writes, DEFAULT_ENCODING
 from nbformat.v4 import new_code_cell, new_markdown_cell, new_notebook
 
+
 HERE = Path(__file__).parent
-ALL_NOTEBOOK_TEXT = [p.read_text(encoding="utf-8") for p in HERE.glob("*.ipynb")]
+ALL_NOTEBOOK_TEXT = [p.read_text(encoding=DEFAULT_ENCODING) for p in HERE.glob('*.ipynb')]
 ALL_NOTEBOOKS = [
-    reads(nb_text, int(re.findall(r"""nbformat":\s+(\d+)""", nb_text)[0]))
+    reads(nb_text, int(re.findall(r'''nbformat":\s+(\d+)''', nb_text)[0]))
     for nb_text in ALL_NOTEBOOK_TEXT
 ]
 

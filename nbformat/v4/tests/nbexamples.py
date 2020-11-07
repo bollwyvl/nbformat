@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 import os
 
 from ..._compat import encodebytes
@@ -131,5 +129,3 @@ nb0 = new_notebook(cells=cells,
         'language': 'python',
     }
 )
-
-

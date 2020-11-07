@@ -29,6 +29,7 @@ from traitlets.config import LoggingConfigurable, MultipleInstanceError
 from jupyter_core.application import JupyterApp, base_flags
 
 from . import read, reads, NO_CONVERT, __version__
+from .constants import DEFAULT_ENCODING
 from ._compat import encodebytes
 
 try:
@@ -569,7 +570,7 @@ class TrustNotebookApp(JupyterApp):
         if not os.path.exists(notebook_path):
             self.log.error("Notebook missing: %s" % notebook_path)
             self.exit(1)
-        with io.open(notebook_path, encoding='utf8') as f:
+        with io.open(notebook_path, encoding=DEFAULT_ENCODING) as f:
             nb = read(f, NO_CONVERT)
         self.sign_notebook(nb, notebook_path)
 

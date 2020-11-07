@@ -9,6 +9,7 @@ import os
 import pytest
 
 from nbformat.validator import validate, ValidationError
+from ...constants import DEFAULT_ENCODING
 from ..nbjson import reads
 from ..nbbase import (
     nbformat,
@@ -100,6 +101,6 @@ def test_invalid_raw_cell():
 
 def test_sample_notebook():
     here = os.path.dirname(__file__)
-    with io.open(os.path.join(here, os.pardir, os.pardir, 'tests', "test4.ipynb"), encoding='utf-8') as f:
+    with io.open(os.path.join(here, os.pardir, os.pardir, 'tests', "test4.ipynb"), encoding=DEFAULT_ENCODING) as f:
         nb = reads(f.read())
     validate4(nb)

@@ -1,22 +1,27 @@
+# Copyright (c) Jupyter Development Team.
+# Distributed under the terms of the Modified BSD License.
+
 import os
 import pytest
 import contextlib
+import tempfile
+
 from hypothesis import given
 
-from nbformat.asynchronous import aread, areads, awrite, awrites, avalidate, ValidationError
-from nbformat.json_compat import VALIDATORS
-import tempfile
+from ..constants import ENV_VAR_VALIDATOR
+from ..asynchronous import aread, areads, awrite, awrites, avalidate, ValidationError
+from ..json_compat import VALIDATORS
 
 from . import strategies as nbs
 
 
 @contextlib.contextmanager
 def json_validator(validator_name):
-    os.environ["NBFORMAT_VALIDATOR"] = validator_name
+    os.environ[ENV_VAR_VALIDATOR] = validator_name
     try:
         yield
     finally:
-        os.environ.pop("NBFORMAT_VALIDATOR")
+        os.environ.pop(ENV_VAR_VALIDATOR)
 
 
 
@@ -24,20 +29,20 @@ def json_validator(validator_name):
 async def _valid(nb_txt, caplog):
     nb, txt = nb_txt
     read_nb = await areads(txt, nb.nbformat)
-    assert "Notebook JSON" not in caplog.text
+    assert 'Notebook JSON' not in caplog.text
 
     await avalidate(read_nb)
 
     with tempfile.TemporaryDirectory() as td:
-        nb_path = os.path.join(td, "notebook.ipynb")
+        nb_path = os.path.join(td, 'notebook.ipynb')
         await awrite(read_nb, nb_path)
-        await aread(nb_path, nb["nbformat"])
+        await aread(nb_path, nb['nbformat'])
 
 @given(nb_txt=nbs.a_valid_notebook_with_string())
 @nbs.base_settings
 @pytest.mark.asyncio
 async def test_async_valid_default(nb_txt, caplog):
-    with json_validator("jsonschema"):
+    with json_validator('jsonschema'):
         await _valid(nb_txt, caplog)
 
 
@@ -45,14 +50,14 @@ async def test_async_valid_default(nb_txt, caplog):
 @nbs.base_settings
 @pytest.mark.asyncio
 async def test_async_valid_fast(nb_txt, caplog):
-    with json_validator("fastjsonschema"):
+    with json_validator('fastjsonschema'):
         await _valid(nb_txt, caplog)
 
 
 async def _invalid(nb_txt, caplog):
     nb, txt = nb_txt
     read_nb = await areads(txt, nb.nbformat)
-    assert "Notebook JSON" in caplog.text
+    assert 'Notebook JSON' in caplog.text
 
     with pytest.raises(ValidationError):
         await avalidate(read_nb)
@@ -62,7 +67,7 @@ async def _invalid(nb_txt, caplog):
 @nbs.base_settings
 @pytest.mark.asyncio
 async def test_async_invalid_default(nb_txt, caplog):
-    with json_validator("jsonschema"):
+    with json_validator('jsonschema'):
         await _invalid(nb_txt, caplog)
 
 
@@ -70,5 +75,5 @@ async def test_async_invalid_default(nb_txt, caplog):
 @nbs.base_settings
 @pytest.mark.asyncio
 async def test_async_invalid_false(nb_txt, caplog):
-    with json_validator("fastjsonschema"):
+    with json_validator('fastjsonschema'):
         await _invalid(nb_txt, caplog)

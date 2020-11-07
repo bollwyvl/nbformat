@@ -9,11 +9,13 @@ import os
 import unittest
 import io
 
+from ..constants import DEFAULT_ENCODING
+
 class TestsBase(unittest.TestCase):
     """Base tests class."""
 
     @classmethod
-    def fopen(cls, f, mode=u'r',encoding='utf-8'):
+    def fopen(cls, f, mode=u'r',encoding=DEFAULT_ENCODING):
         return io.open(os.path.join(cls._get_files_path(), f), mode, encoding=encoding)
 
     @classmethod

@@ -1,11 +1,15 @@
-""" experimental asynchronous API for nbformat
-"""
+"""asynchronous API for nbformat"""
+
+# Copyright (c) Jupyter Development Team.
+# Distributed under the terms of the Modified BSD License.
+
 import asyncio
 import os
 from pathlib import Path
 import aiofiles
 
 from . import reads, writes, read, write, validate, NO_CONVERT, ValidationError
+from .constants import DEFAULT_ENCODING
 
 def _loop():
     return asyncio.get_event_loop()
@@ -25,14 +29,15 @@ def _validate(nbdict, ref, version, version_minor, relax_add_props, nbjson):
 
 
 __all__ = [
-    "NO_CONVERT",
-    "ValidationError",
+    'NO_CONVERT',
+    'DEFAULT_ENCODING',
+    'ValidationError',
     # asynchronous API
-    "areads",
-    "aread",
-    "awrites",
-    "awrite",
-    "avalidate"
+    'areads',
+    'aread',
+    'awrites',
+    'awrite',
+    'avalidate'
 ]
 
 
@@ -41,7 +46,7 @@ async def areads(s, as_version, **kwargs):
 
 
 async def aread(fp, as_version, **kwargs):
-    async with aiofiles.open(fp) as afp:
+    async with aiofiles.open(fp, encoding=DEFAULT_ENCODING) as afp:
         return await areads(await afp.read(), as_version, **kwargs)
 
 
@@ -51,7 +56,7 @@ async def awrites(nb, version=NO_CONVERT, **kwargs):
 
 async def awrite(nb, fp, version=NO_CONVERT, **kwargs):
     nb_str = await awrites(nb, version, **kwargs)
-    async with aiofiles.open(fp, "w+", encoding="utf-8") as afp:
+    async with aiofiles.open(fp, 'w+', encoding=DEFAULT_ENCODING) as afp:
         await afp.write(nb_str)
 
 

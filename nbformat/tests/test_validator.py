@@ -9,6 +9,7 @@ import re
 from .base import TestsBase
 from jsonschema import ValidationError
 from nbformat import read
+from ..constants import ENV_VAR_VALIDATOR
 from ..validator import isvalid, validate, iter_validate
 from ..json_compat import VALIDATORS
 
@@ -19,14 +20,14 @@ import pytest
 @pytest.fixture(autouse=True)
 def clean_env_before_and_after_tests():
     """Fixture to clean up env variables before and after tests."""
-    os.environ.pop("NBFORMAT_VALIDATOR", None)
+    os.environ.pop(ENV_VAR_VALIDATOR, None)
     yield
-    os.environ.pop("NBFORMAT_VALIDATOR", None)
+    os.environ.pop(ENV_VAR_VALIDATOR, None)
 
 
 # Helpers
 def set_validator(validator_name):
-    os.environ["NBFORMAT_VALIDATOR"] = validator_name
+    os.environ[ENV_VAR_VALIDATOR] = validator_name
 
 
 @pytest.mark.parametrize("validator_name", VALIDATORS)
