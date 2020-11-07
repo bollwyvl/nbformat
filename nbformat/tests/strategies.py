@@ -10,7 +10,7 @@ from nbformat.v4 import new_code_cell, new_markdown_cell, new_notebook
 HERE = Path(__file__).parent
 ALL_NOTEBOOKS = [
     reads(
-        p.read_text(),
+        p.read_text(encoding="utf-8"),
         int(re.findall(r"""nbformat":\s+(\d+)""", p.read_text())[0])
     )
     for p in HERE.glob("*.ipynb")
