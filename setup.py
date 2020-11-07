@@ -94,8 +94,10 @@ install_requires = setuptools_args['install_requires'] = [
 extras_require = setuptools_args['extras_require'] = {
     'async': ['aiofiles'],
     'fast': ['fastjsonschema'],
-    'test': ['aiofiles', 'fastjsonschema', 'testpath', 'pytest', 'pytest-cov'],
+    'test': ['hypothesis', 'pytest', 'pytest-asyncio', 'pytest-cov', 'testpath'],
 }
+
+extras_require['test'] = sorted(set(sum(extras_require.values(), [])))
 
 if 'setuptools' in sys.modules:
     setup_args.update(setuptools_args)
