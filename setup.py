@@ -85,10 +85,11 @@ if 'develop' in sys.argv or any(a.startswith('bdist') for a in sys.argv):
 
 setuptools_args = {}
 install_requires = setuptools_args['install_requires'] = [
+    'aiofiles',
     'ipython_genutils',
-    'traitlets>=4.1',
     'jsonschema>=2.4,!=2.5.0',
     'jupyter_core',
+    'traitlets>=4.1',
 ]
 
 extras_require = setuptools_args['extras_require'] = {
