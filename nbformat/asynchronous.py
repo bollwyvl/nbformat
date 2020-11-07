@@ -8,7 +8,7 @@ import aiofiles
 from . import reads, writes, read, write, validate, NO_CONVERT, ValidationError
 
 def _loop():
-    return asyncio.get_running_loop()
+    return asyncio.get_event_loop()
 
 
 # shim calls for tracing, etc.
@@ -33,12 +33,7 @@ def _validate(nbdict, ref, version, version_minor, relax_add_props, nbjson):
 
 __all__ = [
     "NO_CONVERT",
-    # synchronous API
-    "reads",
-    "read",
-    "writes",
-    "write",
-    "validate",
+    "ValidationError",
     # asynchronous API
     "areads",
     "aread",
