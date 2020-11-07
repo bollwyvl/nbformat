@@ -29,6 +29,9 @@ INVALID_NOTEBOOKS = [nb for nb in ALL_NOTEBOOKS if nb not in VALID_NOTEBOOKS]
 CELL_TYPES = [new_code_cell, new_markdown_cell]
 # , nbformat.new_text_cell, nbformat.new_notebook_cell]
 
+# Most tests will need this decorator, because fileio and threads are slow
+base_settings = settings(suppress_health_check=[HealthCheck.too_slow], deadline=None)
+
 a_cell_generator = st.sampled_from(CELL_TYPES)
 a_test_notebook = st.sampled_from(ALL_NOTEBOOKS)
 a_valid_test_notebook = st.sampled_from(VALID_NOTEBOOKS)
