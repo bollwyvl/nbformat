@@ -85,7 +85,6 @@ if 'develop' in sys.argv or any(a.startswith('bdist') for a in sys.argv):
 
 setuptools_args = {}
 install_requires = setuptools_args['install_requires'] = [
-    'aiofiles',
     'ipython_genutils',
     'jsonschema>=2.4,!=2.5.0',
     'jupyter_core',
@@ -93,8 +92,9 @@ install_requires = setuptools_args['install_requires'] = [
 ]
 
 extras_require = setuptools_args['extras_require'] = {
+    'async': ['aiofiles'],
     'fast': ['fastjsonschema'],
-    'test': ['fastjsonschema', 'testpath', 'pytest', 'pytest-cov'],
+    'test': ['aiofiles', 'fastjsonschema', 'testpath', 'pytest', 'pytest-cov'],
 }
 
 if 'setuptools' in sys.modules:
