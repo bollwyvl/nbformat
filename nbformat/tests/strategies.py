@@ -8,12 +8,10 @@ from nbformat import validate, reads, writes
 from nbformat.v4 import new_code_cell, new_markdown_cell, new_notebook
 
 HERE = Path(__file__).parent
+ALL_NOTEBOOK_TEXT = [p.read_text(encoding="utf-8") for p in HERE.glob("*.ipynb")]
 ALL_NOTEBOOKS = [
-    reads(
-        p.read_text(encoding="utf-8"),
-        int(re.findall(r"""nbformat":\s+(\d+)""", p.read_text())[0])
-    )
-    for p in HERE.glob("*.ipynb")
+    reads(nb_text, int(re.findall(r"""nbformat":\s+(\d+)""", nb_text)[0]))
+    for nb_text in ALL_NOTEBOOK_TEXT
 ]
 
 def _is_valid(nb):
