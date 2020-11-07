@@ -42,6 +42,14 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-pip-${{ matrix.PYTHON_VERSION }}-
           ${{ runner.os }}-pip-
+    - name: Cache hypotheses
+      uses: actions/cache@v1
+      with:
+        path: .hypothesis
+        key: ${{ runner.os }}-hypothesis-${{ matrix.PYTHON_VERSION }}-${{ hashFiles('setup.py') }}
+        restore-keys: |
+          ${{ runner.os }}-hypothesis-${{ matrix.PYTHON_VERSION }}-
+          ${{ runner.os }}-hypothesis-
     - name: Install nbformat and test dependencies
       run: |
         pip install --upgrade .[test] codecov
