@@ -91,6 +91,22 @@ async def test_async_invalid_fast(nb_txt):
 @given(nb_txt=nbs.a_valid_notebook_with_string())
 @nbs.base_settings
 @pytest.mark.asyncio
+async def test_async_builtin_open(nb_txt):
+    """someone's probably using `open`"""
+    nb, txt = nb_txt
+    with tempfile.TemporaryDirectory() as td:
+        nb_path = Path(td) / 'notebook.ipynb'
+
+        with open(nb_path, 'w+', encoding=DEFAULT_ENCODING) as fp:
+            await write(nb, fp)
+
+        with open(nb_path, 'r', encoding=DEFAULT_ENCODING) as fp:
+            await read(fp, as_version=nb["nbformat"])
+
+
+@given(nb_txt=nbs.a_valid_notebook_with_string())
+@nbs.base_settings
+@pytest.mark.asyncio
 async def test_async_like_jupyter_server(nb_txt):
     """ the atomic write stuff is rather complex, but it's basically `io.open`
     """
@@ -105,6 +121,7 @@ async def test_async_like_jupyter_server(nb_txt):
         # like _read_notebook[2]
         with io.open(nb_path, 'r', encoding=DEFAULT_ENCODING) as fp:
             await read(fp, as_version=nb["nbformat"])
+
 
 """
 [1]: https://github.com/jupyter/jupyter_server/blob/1.0.5/jupyter_server/services/contents/fileio.py#L279-L282
