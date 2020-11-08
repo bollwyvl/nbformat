@@ -3,7 +3,7 @@
 Use this module to read or write notebook files as particular nbformat versions.
 """
 
-# Copyright (c) IPython Development Team.
+# Copyright (c) Jupyter Development Team.
 # Distributed under the terms of the Modified BSD License.
 import io
 
@@ -15,6 +15,7 @@ from . import v2
 from . import v3
 from . import v4
 from .sentinel import Sentinel
+from .constants import DEFAULT_ENCODING, ENV_VAR_VALIDATOR
 
 __all__ = ['versions', 'validate', 'ValidationError', 'convert', 'from_dict',
            'NotebookNode', 'current_nbformat', 'current_nbformat_minor',
@@ -28,6 +29,7 @@ versions = {
     3: v3,
     4: v4,
 }
+
 
 from .validator import validate, ValidationError
 from .converter import convert
@@ -137,7 +139,7 @@ def read(fp, as_version, **kwargs):
     try:
         buf = fp.read()
     except AttributeError:
-        with io.open(fp, encoding='utf-8') as f:
+        with io.open(fp, encoding=DEFAULT_ENCODING) as f:
             return reads(f.read(), as_version, **kwargs)
 
     return reads(buf, as_version, **kwargs)
@@ -170,7 +172,7 @@ def write(nb, fp, version=NO_CONVERT, **kwargs):
         if not s.endswith(u'\n'):
             fp.write(u'\n')
     except AttributeError:
-        with io.open(fp, 'w', encoding='utf-8') as f:
+        with io.open(fp, 'w', encoding=DEFAULT_ENCODING) as f:
             f.write(s)
             if not s.endswith(u'\n'):
                 f.write(u'\n')

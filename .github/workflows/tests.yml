@@ -2,38 +2,64 @@ name: Run tests
 
 on:
   push:
+    branches:
+      - master
+
   pull_request:
+    branches:
+      - "*"
 
 jobs:
   tests:
     name: ${{ matrix.OS }} - Py${{ matrix.PYTHON_VERSION }}
     runs-on: ${{ matrix.OS }}
     strategy:
-      fail-fast: false 
+      fail-fast: false
       matrix:
-        OS: ['ubuntu-latest', 'windows-latest']
-        PYTHON_VERSION: ['3.5', '3.6', '3.7','3.8']
+        OS: ['ubuntu-latest', 'macos-latest', 'windows-latest']
+        PYTHON_VERSION: ['3.6', '3.9', 'pypy3']
+        exclude:
+        - os: windows-latest
+          PYTHON_VERSION: pypy3
     steps:
     - uses: actions/checkout@v2
     - name: Set up Python
       uses: actions/setup-python@v1
       with:
         python-version: ${{ matrix.PYTHON_VERSION }}
-    - name: Install test dependencies
+    - name: Install python dependencies
       run: |
-        pip install --upgrade pip setuptools
-        pip install .[test]
-        pip install codecov
-    - name: Install nbformat
+        pip install --upgrade pip setuptools wheel
+    - name: Get pip cache dir
+      id: pip-cache
       run: |
-        pip install .
+        echo "::set-output name=dir::$(pip cache dir)"
+    - name: Cache pip
+      uses: actions/cache@v1
+      with:
+        path: ${{ steps.pip-cache.outputs.dir }}
+        key: ${{ runner.os }}-pip-${{ matrix.PYTHON_VERSION }}-${{ hashFiles('setup.py') }}
+        restore-keys: |
+          ${{ runner.os }}-pip-${{ matrix.PYTHON_VERSION }}-
+          ${{ runner.os }}-pip-
+    - name: Cache hypotheses
+      uses: actions/cache@v1
+      with:
+        path: .hypothesis
+        key: ${{ runner.os }}-hypothesis-${{ matrix.PYTHON_VERSION }}-${{ hashFiles('setup.py') }}
+        restore-keys: |
+          ${{ runner.os }}-hypothesis-${{ matrix.PYTHON_VERSION }}-
+          ${{ runner.os }}-hypothesis-
+    - name: Install nbformat and test dependencies
+      run: |
+        pip install --upgrade .[test] codecov
+    - name: List installed packages
+      run: |
         pip freeze
-    - name: List dependencies
-      run: |
-        pip list
+        pip check
     - name: Run tests
       run: |
-        py.test nbformat/tests -v --cov=nbformat
+        pytest nbformat/tests -v --cov=nbformat
     - name: Coverage
       run: |
         codecov

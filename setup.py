@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# coding: utf-8
 
 # Copyright (c) Jupyter Development Team.
 # Distributed under the terms of the Modified BSD License.
@@ -61,20 +60,22 @@ setup_args = dict(
     author_email    = 'jupyter@googlegroups.com',
     url             = 'http://jupyter.org',
     license         = 'BSD',
-    python_requires = '>=3.5',
+    python_requires = '>=3.6',
     platforms       = "Linux, Mac OS X, Windows",
     keywords        = ['Interactive', 'Interpreter', 'Shell', 'Web'],
     classifiers     = [
+        'Framework :: Jupyter',
         'Intended Audience :: Developers',
         'Intended Audience :: System Administrators',
         'Intended Audience :: Science/Research',
         'License :: OSI Approved :: BSD License',
         'Programming Language :: Python',
         'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.5',
+        'Programming Language :: Python :: 3 :: Only',
         'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
         'Programming Language :: Python :: 3.8',
+        'Programming Language :: Python :: 3.9',
     ],
 )
 
@@ -84,15 +85,18 @@ if 'develop' in sys.argv or any(a.startswith('bdist') for a in sys.argv):
 setuptools_args = {}
 install_requires = setuptools_args['install_requires'] = [
     'ipython_genutils',
-    'traitlets>=4.1',
     'jsonschema>=2.4,!=2.5.0',
     'jupyter_core',
+    'traitlets>=4.1',
 ]
 
 extras_require = setuptools_args['extras_require'] = {
+    'async': ['aiofiles>=0.6.0'],
     'fast': ['fastjsonschema'],
-    'test': ['fastjsonschema', 'testpath', 'pytest', 'pytest-cov'],
+    'test': ['hypothesis', 'pytest', 'pytest-asyncio', 'pytest-cov', 'testfixtures', 'testpath'],
 }
+
+extras_require['test'] = sorted(set(sum(extras_require.values(), [])))
 
 if 'setuptools' in sys.modules:
     setup_args.update(setuptools_args)

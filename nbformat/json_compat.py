@@ -18,6 +18,8 @@ except ImportError:
     fastjsonschema = None
     _JsonSchemaException = ValidationError
 
+from .constants import ENV_VAR_VALIDATOR
+
 
 class JsonSchemaValidator:
     name = "jsonschema"
@@ -78,5 +80,5 @@ def get_current_validator():
     """
     Return the default validator based on the value of an environment variable.
     """
-    validator_name = os.environ.get("NBFORMAT_VALIDATOR", "jsonschema")
+    validator_name = os.environ.get(ENV_VAR_VALIDATOR, "jsonschema")
     return _validator_for_name(validator_name)

@@ -6,6 +6,7 @@ import tempfile
 
 pjoin = os.path.join
 
+from ...constants import DEFAULT_ENCODING
 from ..nbbase import (
     NotebookNode,
     new_code_cell, new_text_cell, new_worksheet, new_notebook
@@ -16,7 +17,7 @@ from .nbexamples import nb0, nb0_py
 
 
 def open_utf8(fname, mode):
-    return io.open(fname, mode=mode, encoding='utf-8')
+    return io.open(fname, mode=mode, encoding=DEFAULT_ENCODING)
 
 class NBFormatTest:
     """Mixin for writing notebook format tests"""
@@ -25,16 +26,16 @@ class NBFormatTest:
     nb0_ref = None
     ext = None
     mod = None
-    
+
     def setUp(self):
         self.wd = tempfile.mkdtemp()
-    
+
     def tearDown(self):
         shutil.rmtree(self.wd)
-    
+
     def assertNBEquals(self, nba, nbb):
         self.assertEqual(nba, nbb)
-        
+
     def test_writes(self):
         s = self.mod.writes(nb0)
         if self.nb0_ref:
@@ -51,13 +52,10 @@ class NBFormatTest:
     def test_write_file(self):
         with open_utf8(pjoin(self.wd, "nb0.%s" % self.ext), 'w') as f:
             self.mod.write(nb0, f)
-    
+
     def test_read_file(self):
         with open_utf8(pjoin(self.wd, "nb0.%s" % self.ext), 'w') as f:
             self.mod.write(nb0, f)
-        
+
         with open_utf8(pjoin(self.wd, "nb0.%s" % self.ext), 'r') as f:
             nb = self.mod.read(f)
-        
-
-

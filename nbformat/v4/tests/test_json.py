@@ -3,6 +3,7 @@ import json
 from unittest import TestCase
 
 from ..._compat import decodebytes
+from ...constants import DEFAULT_ENCODING
 from ..nbjson import reads, writes
 from .. import nbjson, nbformat, nbformat_minor
 from .nbexamples import nb0
