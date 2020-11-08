@@ -93,7 +93,7 @@ install_requires = setuptools_args['install_requires'] = [
 extras_require = setuptools_args['extras_require'] = {
     'async': ['aiofiles>=0.6.0'],
     'fast': ['fastjsonschema'],
-    'test': ['hypothesis', 'pytest', 'pytest-asyncio', 'pytest-cov', 'testpath'],
+    'test': ['hypothesis', 'pytest', 'pytest-asyncio', 'pytest-cov', 'testfixtures', 'testpath'],
 }
 
 extras_require['test'] = sorted(set(sum(extras_require.values(), [])))
