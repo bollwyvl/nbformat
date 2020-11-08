@@ -2,18 +2,21 @@
 # Distributed under the terms of the Modified BSD License.
 
 import os
+import io
 import pytest
 import contextlib
 import tempfile
+from pathlib import Path
 
+import aiofiles
 from hypothesis import given
+from testfixtures import LogCapture
 
-from ..constants import ENV_VAR_VALIDATOR
-from ..asynchronous import read, reads, write, writes, validate, ValidationError
+from ..constants import ENV_VAR_VALIDATOR, DEFAULT_ENCODING
+from ..asynchronous import read, reads, write, writes, validate, ValidationError, NO_CONVERT
 from ..json_compat import VALIDATORS
 
 from . import strategies as nbs
-from testfixtures import LogCapture
 
 
 @contextlib.contextmanager
@@ -83,3 +86,27 @@ async def test_async_invalid_default(nb_txt):
 async def test_async_invalid_fast(nb_txt):
     with json_validator('fastjsonschema'):
         await _invalid(*nb_txt)
+
+
+@given(nb_txt=nbs.a_valid_notebook_with_string())
+@nbs.base_settings
+@pytest.mark.asyncio
+async def test_async_like_jupyter_server(nb_txt):
+    """ the atomic write stuff is rather complex, but it's basically `io.open`
+    """
+    nb, txt = nb_txt
+    with tempfile.TemporaryDirectory() as td:
+        nb_path = Path(td) / 'notebook.ipynb'
+
+        # like _save_notebook[1]
+        with io.open(nb_path, 'w+', encoding=DEFAULT_ENCODING) as fp:
+            await write(nb, fp)
+
+        # like _read_notebook[2]
+        with io.open(nb_path, 'r', encoding=DEFAULT_ENCODING) as fp:
+            await read(fp, as_version=nb["nbformat"])
+
+"""
+[1]: https://github.com/jupyter/jupyter_server/blob/1.0.5/jupyter_server/services/contents/fileio.py#L279-L282
+[2]: https://github.com/jupyter/jupyter_server/blob/1.0.5/jupyter_server/services/contents/fileio.py#L254-L258
+"""
