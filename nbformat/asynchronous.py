@@ -63,7 +63,7 @@ async def writes(nb, version=NO_CONVERT, **kwargs):
 async def read(fp, as_version, **kwargs):
     if isinstance(fp, AIOFILES_OPENABLE):
         async with aiofiles.open(fp, encoding=DEFAULT_ENCODING) as afp:
-            nb_str = afp.read()
+            nb_str = await afp.read()
     elif isinstance(fp, io.TextIOWrapper):
         nb_str = await AsyncTextIOWrapper(fp, loop=_loop(), executor=None).read()
     else:
